@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmotionAI — Real-Time Face Emotion Detector</title>
+    <meta name="description" content="AI-powered real-time face emotion detection using Machine Learning. Detect 7 emotions from your webcam feed instantly in your browser.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎭</text></svg>">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ============ PARTICLES BACKGROUND ============ -->
+    <div id="particles-container" aria-hidden="true"></div>
+
+    <!-- ============ LANDING SECTION ============ -->
+    <section id="landing-section" class="section active">
+        <div class="landing-content">
+            <div class="hero">
+                <div class="hero-badge">
+                    <span class="badge-dot"></span>
+                    AI / Machine Learning
+                </div>
+                <h1 class="hero-title">
+                    <span class="title-emoji">🎭</span>
+                    Emotion<span class="title-highlight">AI</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Real-time face emotion detection powered by <strong>TensorFlow.js</strong> &amp;
+                    <strong>Neural Networks</strong>. Detect 7 human emotions instantly — right in your browser.
+                </p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">7</span>
+                        <span class="stat-label">Emotions</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">68</span>
+                        <span class="stat-label">Face Points</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">~10</span>
+                        <span class="stat-label">FPS</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <span class="stat-number">₹0</span>
+                        <span class="stat-label">Cost</span>
+                    </div>
+                </div>
+                <button id="start-btn" class="btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    Start Detection
+                </button>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧠</div>
+                    <h3>Neural Network</h3>
+                    <p>CNN-based model running entirely in your browser via TensorFlow.js</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Real-Time</h3>
+                    <p>Face detection and emotion analysis at ~10 frames per second live</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔒</div>
+                    <h3>100% Private</h3>
+                    <p>Everything runs locally. Your camera feed never leaves your device</p>
+                </div>
+            </div>
+
+            <div class="how-it-works">
+                <h2 class="section-title">How It Works</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h4>Camera Access</h4>
+                            <p>Allow webcam access to start</p>
+                        </div>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h4>AI Detection</h4>
+                            <p>ML model detects face &amp; 68 landmarks</p>
+                        </div>
+                    </div>
+                    <div class="step-arrow">→</div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h4>Emotion Analysis</h4>
+                            <p>Neural network classifies expression</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ LOADING OVERLAY ============ -->
+    <div id="loading-overlay" class="hidden">
+        <div class="loading-content">
+            <div class="loading-spinner">
+                <div class="spinner-ring"></div>
+                <span class="spinner-emoji">🧠</span>
+            </div>
+            <h2 class="loading-title">Loading AI Models</h2>
+            <p id="loading-status" class="loading-status">Initializing...</p>
+            <div class="loading-progress">
+                <div id="loading-bar" class="loading-bar"></div>
+            </div>
+            <div class="loading-models">
+                <div id="model-1" class="model-item">
+                    <span class="model-dot"></span>
+                    Face Detection Model
+                </div>
+                <div id="model-2" class="model-item">
+                    <span class="model-dot"></span>
+                    Facial Landmark Model (68 points)
+                </div>
+                <div id="model-3" class="model-item">
+                    <span class="model-dot"></span>
+                    Expression Recognition Model
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ DETECTION SECTION ============ -->
+    <section id="detection-section" class="section hidden">
+        <header class="detection-header">
+            <div class="header-left">
+                <div class="brand-mini">🎭 EmotionAI</div>
+                <div class="live-badge">
+                    <span class="live-dot"></span>
+                    LIVE
+                </div>
+            </div>
+            <div class="header-center">
+                <div id="dominant-emotion-display" class="dominant-emotion">
+                    <span id="dominant-emoji" class="dominant-emoji">😐</span>
+                    <span id="dominant-label" class="dominant-label">Neutral</span>
+                    <span id="dominant-confidence" class="dominant-confidence">0%</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div id="session-timer" class="session-timer">00:00</div>
+                <button id="analytics-btn" class="btn-icon" title="View Analytics">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="detection-main">
+            <div class="video-wrapper">
+                <div class="video-container" id="video-container">
+                    <video id="webcam" autoplay muted playsinline></video>
+                    <canvas id="overlay"></canvas>
+                    <div id="no-face-msg" class="no-face-message hidden">
+                        <span class="no-face-emoji">👀</span>
+                        <span>No face detected — look at the camera!</span>
+                    </div>
+                    <div class="video-corners">
+                        <span class="corner corner-tl"></span>
+                        <span class="corner corner-tr"></span>
+                        <span class="corner corner-bl"></span>
+                        <span class="corner corner-br"></span>
+                    </div>
+                </div>
+                <div class="video-controls">
+                    <button id="toggle-landmarks-btn" class="btn-control active" title="Toggle Landmarks">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle><circle cx="5" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle></svg>
+                        Landmarks
+                    </button>
+                    <button id="screenshot-btn" class="btn-control" title="Take Screenshot">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        Screenshot
+                    </button>
+                    <button id="stop-btn" class="btn-control btn-danger" title="Stop & Go Home">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
+                        Stop
+                    </button>
+                </div>
+            </div>
+
+            <aside class="emotion-panel">
+                <h2 class="panel-title">Emotion Analysis</h2>
+                <div class="emotion-bars">
+                    <div class="emotion-bar-item" data-emotion="happy">
+                        <div class="emotion-bar-header">
+                            <span class="emotion-bar-emoji">😊</span>
+                            <span class="emotion-bar-label">Happy</span>
+                            <span class="emotion-bar-value" id="val-happy">0%</span>
+                        </div>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-happy" style="--emotion-color: #fbbf24"></div>
+                        </div>
+                    </div>
+                    <div class="emotion-bar-item" data-emotion="sad">
+                        <div class="emotion-bar-header">
+                            <span class="emotion-bar-emoji">😢</span>
+                            <span class="emotion-bar-label">Sad</span>
+                            <span class="emotion-bar-value" id="val-sad">0%</span>
+                        </div>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-sad" style="--emotion-color: #3b82f6"></div>
+                        </div>
+                    </div>
+                    <div class="emotion-bar-item" data-emotion="angry">
+                        <div class="emotion-bar-header">
+                            <span class="emotion-bar-emoji">😠</span>
+                            <span class="emotion-bar-label">Angry</span>
+                            <span class="emotion-bar-value" id="val-angry">0%</span>
+                        </div>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-angry" style="--emotion-color: #ef4444"></div>
+                        </div>
+                    </div>
+                    <div class="emotion-bar-item" data-emotion="surprised">
+                        <div class="emotion-bar-header">
+                            <span class="emotion-bar-emoji">😲</span>
+                            <span class="emotion-bar-label">Surprised</span>
+                            <span class="emotion-bar-value" id="val-surprised">0%</span>
+                        </div>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-surprised" style="--emotion-color: #f97316"></div>
+                        </div>
+                    </div>
+                    <div class="emotion-bar-item" data-emotion="fearful">
+                        <div class="emotion-bar-header">
+                            <span class="emotion-bar-emoji">😨</span>
+                            <span class="emotion-bar-label">Fearful</span>
+                            <span class="emotion-bar-value" id="val-fearful">0%</span>
+                        </div>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-fearful" style="--emotion-color: #8b5cf6"></div>
+                        </div>
+                    </div>
+                    <div class="emotion-bar-item" data-emotion="disgusted">
+                        <div class="emotion-bar-header">
+                            <span class="emotion-bar-emoji">🤢</span>
+                            <span class="emotion-bar-label">Disgusted</span>
+                            <span class="emotion-bar-value" id="val-disgusted">0%</span>
+                        </div>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-disgusted" style="--emotion-color: #22c55e"></div>
+                        </div>
+                    </div>
+                    <div class="emotion-bar-item" data-emotion="neutral">
+                        <div class="emotion-bar-header">
+                            <span class="emotion-bar-emoji">😐</span>
+                            <span class="emotion-bar-label">Neutral</span>
+                            <span class="emotion-bar-value" id="val-neutral">0%</span>
+                        </div>
+                        <div class="emotion-bar-track">
+                            <div class="emotion-bar-fill" id="bar-neutral" style="--emotion-color: #94a3b8"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="face-info-card">
+                    <h3 class="face-info-title">Detection Info</h3>
+                    <div class="face-info-row">
+                        <span>Faces Detected</span>
+                        <span id="face-count" class="face-info-value">0</span>
+                    </div>
+                    <div class="face-info-row">
+                        <span>Confidence</span>
+                        <span id="face-confidence" class="face-info-value">0%</span>
+                    </div>
+                    <div class="face-info-row">
+                        <span>Landmarks</span>
+                        <span id="landmark-status" class="face-info-value">68 pts</span>
+                    </div>
+                </div>
+            </aside>
+        </main>
+    </section>
+
+    <!-- ============ ANALYTICS SECTION ============ -->
+    <section id="analytics-section" class="section hidden">
+        <header class="analytics-header">
+            <button id="back-btn" class="btn-back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                Back to Detection
+            </button>
+            <h1 class="analytics-title">📊 Session Analytics</h1>
+            <div class="analytics-session-time">
+                Session: <span id="analytics-timer">00:00</span>
+            </div>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-icon" style="--card-color: #7c3aed">🎭</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-label">Dominant Mood</span>
+                    <span id="stat-dominant" class="stat-card-value">—</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon" style="--card-color: #06b6d4">📸</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-label">Total Samples</span>
+                    <span id="stat-samples" class="stat-card-value">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon" style="--card-color: #fbbf24">😊</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-label">Happiness Score</span>
+                    <span id="stat-happiness" class="stat-card-value">0%</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-icon" style="--card-color: #22c55e">🧘</div>
+                <div class="stat-card-info">
+                    <span class="stat-card-label">Mood Stability</span>
+                    <span id="stat-stability" class="stat-card-value">—</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">Emotion Timeline</h3>
+                <p class="chart-subtitle">How your emotions changed over time</p>
+                <div class="chart-container">
+                    <canvas id="timeline-chart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Emotion Distribution</h3>
+                <p class="chart-subtitle">Overall emotion breakdown</p>
+                <div class="chart-container chart-container-sm">
+                    <canvas id="distribution-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SCREENSHOT TOAST ============ -->
+    <div id="screenshot-toast" class="toast hidden">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Screenshot saved!
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
